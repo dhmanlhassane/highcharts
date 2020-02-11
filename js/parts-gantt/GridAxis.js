@@ -171,15 +171,19 @@ Axis.prototype.getMaxLabelDimensions = function (ticks, tickPositions) {
     });
     return dimensions;
 };
-// Add custom date formats
+// Adds week date format
 H.dateFormats.W = function (timestamp) {
-    var d = new Date(timestamp), yearStart, weekNo;
+    var d = new Date(timestamp);
     d.setHours(0, 0, 0, 0);
-    d.setDate(d.getDate() - (d.getDay() || 7));
-    yearStart = new Date(d.getFullYear(), 0, 1);
-    weekNo =
-        Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-    return weekNo;
+    var dayNumber = (d.getDay() + 6) % 7;
+    d.setDate(d.getDate() - dayNumber + 3);
+    // As per the ISO 8601 standard, week 1 is the first week with a Thursday
+    var firstThursday = new Date(d.valueOf());
+    var startOfYear = new Date(d.setMonth(0, 1));
+    if (startOfYear.getDay() !== 4) {
+        startOfYear.setMonth(0, 1 + ((4 - startOfYear.getDay()) + 7) % 7);
+    }
+    return 1 + Math.ceil((firstThursday.valueOf() - startOfYear.valueOf()) / 604800000);
 };
 // First letter of the day of the week, e.g. 'M' for 'Monday'.
 H.dateFormats.E = function (timestamp) {
