@@ -175,11 +175,11 @@ Axis.prototype.getMaxLabelDimensions = function (ticks, tickPositions) {
 H.dateFormats.W = function (timestamp) {
     var d = new Date(timestamp);
     d.setHours(0, 0, 0, 0);
-    var dayNumber = (d.getDay() + 6) % 7;
+    var dayNumber = d.getUTCDay() === 0 ? 7 : d.getUTCDay();
     d.setDate(d.getDate() - dayNumber + 3);
     // As per the ISO 8601 standard, week 1 is the first week with a Thursday
     var firstThursday = new Date(d.valueOf());
-    var startOfYear = new Date(d.setMonth(0, 1));
+    var startOfYear = new Date(d.getFullYear(), 0, 1);
     if (startOfYear.getDay() !== 4) {
         startOfYear.setMonth(0, 1 + ((4 - startOfYear.getDay()) + 7) % 7);
     }

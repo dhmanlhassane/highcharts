@@ -262,12 +262,12 @@ Axis.prototype.getMaxLabelDimensions = function (
 H.dateFormats.W = function (timestamp: number): string {
     const d = new Date(timestamp);
     d.setHours(0, 0, 0, 0);
-    const dayNumber = (d.getDay() + 6) % 7;
+    const dayNumber = d.getUTCDay() === 0 ? 7 : d.getUTCDay();
     d.setDate(d.getDate() - dayNumber + 3);
 
     // As per the ISO 8601 standard, week 1 is the first week with a Thursday
     const firstThursday = new Date(d.valueOf());
-    const startOfYear = new Date(d.setMonth(0, 1));
+    const startOfYear = new Date(d.getFullYear(), 0, 1);
 
     if (startOfYear.getDay() !== 4) {
         startOfYear.setMonth(0, 1 + ((4 - startOfYear.getDay()) + 7) % 7);
